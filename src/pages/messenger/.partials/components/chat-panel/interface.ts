@@ -18,4 +18,5 @@ export interface ChatPanelProps {
   chatSearchQuery: string;
   onChatSearchQueryChange: (value: string) => void;
   onToggleChatSearch: () => void;
+  historyLoading?: boolean;
 }

@@ -22,6 +22,7 @@ export function ChatPanel({
   chatSearchQuery,
   onChatSearchQueryChange,
   onToggleChatSearch,
+  historyLoading,
 }: ChatPanelProps) {
   return (
     <main
@@ -45,6 +46,11 @@ export function ChatPanel({
             searchMatchCount={messages.length}
             totalMessages={allMessagesCount}
           />
+          {historyLoading && (
+            <p className="bg-max-panel px-4 py-1.5 text-center text-xs text-max-text-secondary">
+              Загрузка истории…
+            </p>
+          )}
           {chatSearchOpen && chatSearchQuery.trim() && messages.length === 0 && (
             <p className="bg-max-panel px-4 py-2 text-center text-xs text-max-text-secondary">
               Сообщений не найдено

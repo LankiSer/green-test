@@ -109,3 +109,64 @@ export async function getInstanceState(credentials: GreenApiCredentials): Promis
   const data = (await res.json()) as { stateInstance?: string };
   return data.stateInstance ?? 'unknown';
 }
+
+export interface GreenApiChat {
+  chatId: string;
+  name: string;
+  type: 'user' | 'group' | 'channel' | 'bot' | string;
+  phoneNumber?: number;
+}
+
+export async function getChats(credentials: GreenApiCredentials): Promise<GreenApiChat[]> {
+  const url = instancePath(credentials, 'getChats');
+  const res = await fetch(url, { method: 'GET' });
+  if (!res.ok) {
+    throw new GreenApiError(await parseError(res), res.status);
+  }
+  const data = (await res.json()) as GreenApiChat[];
+  return Array.isArray(data) ? data : [];
+}
+
+export async function getChatHistory(
+  credentials: GreenApiCredentials,
+  chatId: string,
+  count = 100,
+): Promise<unknown[]> {
+  const url = instancePath(credentials, 'getChatHistory');
+  const res = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ chatId, count }),
+  });
+  if (!res.ok) {
+    throw new GreenApiError(await parseError(res), res.status);
+  }
+  const data = (await res.json()) as unknown;
+  return Array.isArray(data) ? data : [];
+}
+
+export async function lastIncomingMessages(
+  credentials: GreenApiCredentials,
+  minutes = 10_080,
+): Promise<unknown[]> {
+  const url = `${instancePath(credentials, 'lastIncomingMessages')}?minutes=${minutes}`;
+  const res = await fetch(url, { method: 'GET' });
+  if (!res.ok) {
+    throw new GreenApiError(await parseError(res), res.status);
+  }
+  const data = (await res.json()) as unknown;
+  return Array.isArray(data) ? data : [];
+}
+
+export async function lastOutgoingMessages(
+  credentials: GreenApiCredentials,
+  minutes = 10_080,
+): Promise<unknown[]> {
+  const url = `${instancePath(credentials, 'lastOutgoingMessages')}?minutes=${minutes}`;
+  const res = await fetch(url, { method: 'GET' });
+  if (!res.ok) {
+    throw new GreenApiError(await parseError(res), res.status);
+  }
+  const data = (await res.json()) as unknown;
+  return Array.isArray(data) ? data : [];
+}

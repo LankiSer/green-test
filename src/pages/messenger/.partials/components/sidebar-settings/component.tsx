@@ -23,7 +23,11 @@ export function SidebarSettings({ idInstance, apiUrl, onLogout }: SidebarSetting
       </section>
 
       <section className="mt-4 rounded-2xl border border-max-border bg-white p-4 text-sm text-max-text-secondary">
-        <p>Приём сообщений работает через HTTP API. Убедитесь, что webhook в кабинете пустой.</p>
+        <p>
+          Чаты и история подтягиваются через GetChats, журналы сообщений и GetChatHistory. Новые
+          сообщения в реальном времени — через ReceiveNotification (webhook в кабинете должен быть
+          пустым).
+        </p>
       </section>
 
       <Button

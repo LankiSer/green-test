@@ -4,4 +4,6 @@ export interface ChatSidebarHeaderProps {
   section: NavSection;
   onNewChat: () => void;
   hideNewButton?: boolean;
+  syncing?: boolean;
+  onSync?: () => void;
 }

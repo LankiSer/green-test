@@ -3,14 +3,20 @@ import { useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/common/auth/providers/AuthProvider';
 import { sendTextMessage } from '@/common/messaging/api/greenApiClient';
 import { useChatMessages, useChatStorage } from '@/common/messaging/hooks/useChatStorage';
+import { useMessengerSync } from '@/common/messaging/hooks/useMessengerSync';
 import { useNotificationPolling } from '@/common/messaging/hooks/useNotificationPolling';
-import { formatPhoneDisplay, phoneToChatId } from '@/common/messaging/lib/phone';
+import { formatPhoneDisplay } from '@/common/messaging/lib/phone';
 import type { NavSection } from '@/pages/messenger/.partials/constants/nav-items';
 import { filterThreadsBySection } from '@/pages/messenger/.partials/lib/filter-threads-by-section';
 
 export function useMessengerPage() {
   const { logout, credentials } = useAuth();
-  const { threads, upsertThread, appendMessage, updateMessage } = useChatStorage();
+  const storage = useChatStorage();
+  const { threads, upsertThread, appendMessage, updateMessage, resolveChatIdForPhone } = storage;
+  const { syncing, historyLoading, syncError, syncAll, loadChatHistory } = useMessengerSync(
+    credentials,
+    storage,
+  );
   const [searchParams, setSearchParams] = useSearchParams();
   const activeChatId = searchParams.get('chat');
   const allMessages = useChatMessages(activeChatId);
@@ -24,6 +30,9 @@ export function useMessengerPage() {
   const [sendError, setSendError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const listRef = useRef<HTMLDivElement>(null);
+  const loadHistoryRef = useRef(loadChatHistory);
+
+  loadHistoryRef.current = loadChatHistory;
 
   useNotificationPolling(Boolean(credentials));
 
@@ -60,8 +69,21 @@ export function useMessengerPage() {
     if (!activeChatId) {
       setChatSearchOpen(false);
       setChatSearchQuery('');
+      return;
     }
+    void loadHistoryRef.current(activeChatId);
   }, [activeChatId]);
+
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { from, to } = (e as CustomEvent<{ from: string; to: string }>).detail;
+      if (searchParams.get('chat') === from) {
+        setSearchParams({ chat: to }, { replace: true });
+      }
+    };
+    window.addEventListener('chat-id-migrated', handler);
+    return () => window.removeEventListener('chat-id-migrated', handler);
+  }, [searchParams, setSearchParams]);
 
   const selectChat = (chatId: string) => setSearchParams({ chat: chatId });
   const clearChat = () => setSearchParams({});
@@ -79,7 +101,7 @@ export function useMessengerPage() {
   const startChat = (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const chatId = phoneToChatId(newPhone);
+      const chatId = resolveChatIdForPhone(newPhone);
       const title = formatPhoneDisplay(newPhone);
       upsertThread({
         chatId,
@@ -92,6 +114,7 @@ export function useMessengerPage() {
       setShowNewChat(false);
       setSendError(null);
       setNavSection('all');
+      void loadHistoryRef.current(chatId, true);
     } catch (err) {
       setSendError(err instanceof Error ? err.message : 'Неверный номер');
     }
@@ -163,5 +186,9 @@ export function useMessengerPage() {
     clearChat,
     startChat,
     sendMessage,
+    syncing,
+    historyLoading,
+    syncError,
+    syncAll: () => syncAll(true),
   };
 }

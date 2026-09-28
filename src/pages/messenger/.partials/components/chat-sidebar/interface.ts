@@ -18,4 +18,7 @@ export interface ChatSidebarProps {
   idInstance: string;
   apiUrl: string;
   onLogout: () => void;
+  syncing?: boolean;
+  syncError?: string | null;
+  onSync?: () => void;
 }

@@ -25,6 +25,9 @@ export function ChatSidebar({
   idInstance,
   apiUrl,
   onLogout,
+  syncing,
+  syncError,
+  onSync,
 }: ChatSidebarProps) {
   return (
     <aside
@@ -37,7 +40,12 @@ export function ChatSidebar({
         section={section}
         onNewChat={onToggleNewChat}
         hideNewButton={section === 'settings' || section === 'calls'}
+        syncing={syncing}
+        onSync={onSync}
       />
+      {syncError && section !== 'settings' && (
+        <p className="mx-4 mb-2 text-xs text-red-500">{syncError}</p>
+      )}
 
       {section === 'settings' ? (
         <SidebarSettings idInstance={idInstance} apiUrl={apiUrl} onLogout={onLogout} />

@@ -26,6 +26,9 @@ export function MessengerView() {
         idInstance={m.credentials?.idInstance ?? '—'}
         apiUrl={m.credentials?.apiUrl ?? '—'}
         onLogout={m.logout}
+        syncing={m.syncing}
+        syncError={m.syncError}
+        onSync={m.syncAll}
       />
       <ChatPanel
         activeChatId={m.activeChatId}
@@ -44,6 +47,7 @@ export function MessengerView() {
         chatSearchQuery={m.chatSearchQuery}
         onChatSearchQueryChange={m.setChatSearchQuery}
         onToggleChatSearch={m.toggleChatSearch}
+        historyLoading={m.historyLoading}
       />
     </div>
   );
