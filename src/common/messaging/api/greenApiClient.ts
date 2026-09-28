@@ -10,12 +10,9 @@ export class GreenApiError extends Error {
   }
 }
 
-/** В dev запросы идут через Vite proxy (обход CORS). */
-export function resolveApiBase(credentials: GreenApiCredentials): string {
-  if (import.meta.env.DEV) {
-    return '/green-api';
-  }
-  return credentials.apiUrl.replace(/\/$/, '');
+/** Запросы через same-origin proxy (Vite dev / server.mjs на Railway) — обход CORS. */
+export function resolveApiBase(_credentials: GreenApiCredentials): string {
+  return '/green-api';
 }
 
 function instancePath(credentials: GreenApiCredentials, method: string): string {
