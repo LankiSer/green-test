@@ -1,0 +1,137 @@
+@import 'tailwindcss';
+
+@theme {
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --color-max-bg: #ffffff;
+  --color-max-panel: #f4f4f5;
+  --color-max-sidebar: #ffffff;
+  --color-max-rail: #ffffff;
+  --color-max-accent: #2481cc;
+  --color-max-accent-hover: #1a6db3;
+  --color-max-accent-soft: #e7f3ff;
+  --color-max-bubble-out: #effdde;
+  --color-max-bubble-in: #ffffff;
+  --color-max-border: #e5e5ea;
+  --color-max-muted: #8e8e93;
+  --color-max-text: #000000;
+  --color-max-text-secondary: #707579;
+  --color-max-chat-bg: #b8cfe0;
+  --color-max-hover: #f2f2f7;
+  --color-max-active: #e8f4fd;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-sans);
+  background: var(--color-max-bg);
+  color: var(--color-max-text);
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c7c7cc;
+  border-radius: 999px;
+}
+
+@keyframes max-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes max-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes max-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes max-scale-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes max-message-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-max-fade-in {
+  animation: max-fade-in 0.35s ease-out both;
+}
+
+.animate-max-slide-up {
+  animation: max-slide-up 0.4s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-max-slide-down {
+  animation: max-slide-down 0.28s ease-out both;
+}
+
+.animate-max-scale-in {
+  animation: max-scale-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.animate-max-message-in {
+  animation: max-message-in 0.32s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.chat-wallpaper {
+  background-color: var(--color-max-chat-bg);
+  background-image: url('/chat-pattern.svg');
+  background-size: 420px 420px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-max-fade-in,
+  .animate-max-slide-up,
+  .animate-max-slide-down,
+  .animate-max-scale-in,
+  .animate-max-message-in {
+    animation: none;
+  }
+}
