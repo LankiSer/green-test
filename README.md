@@ -36,20 +36,42 @@ npm start
 
 http://localhost:4173
 
-## Деплой на [Railway](https://railway.app)
+## Бесплатный деплой (рекомендуем: Render)
 
-1. Залейте репозиторий на **GitHub** (без `.env.local` и токенов в git).
-2. Railway → **New Project** → **Deploy from GitHub repo** → выберите репозиторий.
-3. В **Variables** добавьте:
-   - `GREEN_API_TARGET_URL` = `https://3100.api.green-api.com` (ваш `apiUrl` из кабинета)
-   - опционально для автозаполнения login (только если осознанно):  
-     `VITE_GREEN_API_URL`, `VITE_GREEN_ID_INSTANCE`, `VITE_GREEN_API_TOKEN` — **нужны на этапе build**; проще вводить credentials на экране входа после деплоя.
-4. **Settings → Networking → Generate Domain** — получите публичный URL.
-5. Build: `npm ci && npm run build`, Start: `npm start` (уже в `railway.toml`).
+Подходит любой хостинг с **Node.js** и командой `npm start` (у нас Express + статика + прокси API).
 
-На Railway запросы к GREEN-API идут через прокси `/green-api` на `GREEN_API_TARGET_URL` (без CORS в браузере).
+### [Render.com](https://render.com) — самый простой заменитель Railway
 
-**Важно:** `apiUrl` на экране входа должен совпадать с тем же хостом, что и `GREEN_API_TARGET_URL` на сервере.
+1. Репозиторий на **GitHub** (без `.env.local`).
+2. Render → **New** → **Blueprint** → подключите repo (есть `render.yaml`)  
+   **или** **Web Service** вручную:
+   - Build: `npm ci && npm run build`
+   - Start: `npm start`
+   - Instance type: **Free**
+3. **Environment** → `GREEN_API_TARGET_URL` = `https://3100.api.green-api.com`
+4. После деплоя URL вида `https://green-max-chat.onrender.com`
+
+**Минус free tier:** сервис «засыпает» без посещений (~50 с на первый запрос после паузы).
+
+### Другие бесплатные варианты
+
+| Платформа | Плюсы | Минусы |
+|-----------|--------|--------|
+| [Fly.io](https://fly.io) | Не спит так агрессивно | Нужен CLI / `fly launch`, лимиты по RAM |
+| [Koyeb](https://www.koyeb.com) | GitHub deploy, Docker | Free tier с лимитами |
+| [Glitch](https://glitch.com) | Очень просто | Слабее для постоянного polling API |
+| [Vercel](https://vercel.com) / [Netlify](https://netlify.com) | Отлично для статики | Прокси GREEN-API нужно отдельно (serverless); наш `server.mjs` — проще на Render |
+
+**Не подойдут без доработки:** чистый GitHub Pages / Cloudflare Pages (только статика, без Node-прокси → CORS к GREEN-API).
+
+### Railway
+
+Аналогично Render: `GREEN_API_TARGET_URL`, build `npm ci && npm run build`, start `npm start` (`railway.toml`).
+
+---
+
+На хостинге запросы идут через `/green-api` → `GREEN_API_TARGET_URL`.  
+**Важно:** `apiUrl` на экране входа = тот же хост, что в `GREEN_API_TARGET_URL`.
 
 ## Стек
 

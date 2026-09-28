@@ -1,0 +1,14 @@
+# https://render.com — бесплатный Web Service (засыпает после ~15 мин без трафика)
+services:
+  - type: web
+    name: green-max-chat
+    runtime: node
+    plan: free
+    buildCommand: npm ci && npm run build
+    startCommand: npm start
+    healthCheckPath: /
+    envVars:
+      - key: NODE_VERSION
+        value: '20'
+      - key: GREEN_API_TARGET_URL
+        sync: false
